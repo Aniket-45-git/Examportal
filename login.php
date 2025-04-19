@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TestGenius - login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+    
+</head>
+<style>
+    body {
+    font-family: 'Poppins', sans-serif;
+    background-image: url('3d-illustration-with-blank-device-screen-sales-banner_23-2151299148.avif');
+    display: flex;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+}
+
+.login-container {
+    width: 100%;
+    max-width: 400px;
+    background: transparent;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    border: 1px solid black;
+}
+
+.logo {
+    font-size: 26px;
+    font-weight: bold;
+    color: #333;
+}
+
+.logo span {
+    color: #8e44ad;
+}
+
+h3 {
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.social-login {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.social-btn {
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 50%;
+    background: #ddd;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+input {
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    outline: none;
+}
+
+.forgot-password {
+    font-size: 12px;
+    color: #555;
+    text-decoration: none;
+    margin-bottom: 10px;
+}
+
+.login-btn {
+    background: #8e44ad;
+    color: #fff;
+    border: none;
+    padding: 12px;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.login-btn:hover {
+    background: #732d91;
+}
+
+</style>
+<body>
+    <div class="login-container">
+        <div class="login-box">
+            <h2 class="logo">Test <span>Genius</span></h2>
+            <h3>Login to your account</h3>
+            <div class="social-login">
+                <button class="social-btn">F</button>
+                <button class="social-btn">G</button>
+                <button class="social-btn">in</button>
+            </div>
+            <form action="index.php" method="POST">
+        <label>Email</label>
+        <input type="email" name="email" required>
+
+        <label>Password</label>
+        <input type="password" name="password" required>
+
+        <button type="submit">Login</button>
+    </form>
+        </div>
+    </div>
+</body>
+</html>
+<?php
+session_start();
+include 'db_connect.php';
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+
+    // Fetch user data
+    $stmt = $conn->prepare("SELECT id, name, password, role FROM users WHERE email = ?");
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $stmt->store_result();
+    $stmt->bind_result($id, $name, $hashed_password, $role);
+    $stmt->fetch();
+
+    if ($stmt->num_rows > 0 && password_verify($password, $hashed_password)) {
+        $_SESSION['user_id'] = $id;
+        $_SESSION['name'] = $name;
+        $_SESSION['role'] = $role;
+
+        // echo "Login successful! Redirecting...";
+        header("Refresh: 1; url=dashboard.php"); // Redirect after 2 seconds
+    } else {
+        echo "Invalid email or password!";
+    }
+}
+?>

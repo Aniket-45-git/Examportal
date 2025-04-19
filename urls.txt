@@ -1,0 +1,6 @@
+http://localhost/examporttal/testgenius/register.php
+
+http://localhost/examporttal/admin/login.php
+
+admin email= admin@gmail.com
+admin password= admin12345
